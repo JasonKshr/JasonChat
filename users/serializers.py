@@ -21,3 +21,8 @@ class ProfileSerializer(serializers.ModelSerializer):
 class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(write_only=True)
     new_password = serializers.CharField(write_only=True)
+    
+from django.contrib.auth.password_validation import validate_password
+def validate_password(self, value):
+    validate_password(value)
+    return value

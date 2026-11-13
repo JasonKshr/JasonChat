@@ -1,0 +1,125 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8f8f6">
+  <title>JasonChat — a little more connected</title>
+  <link rel="stylesheet" href="{% static 'users/styles.css' %}">
+  <script src="{% static 'users/app.js' %}" defer></script>
+</head>
+<body>
+  <form class="hidden" aria-hidden="true">{% csrf_token %}</form>
+  <main id="auth-screen" class="auth-screen">
+    <section class="auth-card">
+      <a class="brand brand-auth" href="/" aria-label="JasonChat home">
+        <span class="brand-mark">j</span><span>jasonchat</span>
+      </a>
+      <p class="eyebrow">A little more connected</p>
+      <h1 id="auth-title">Good conversations start here.</h1>
+      <p class="auth-copy">A quieter, more thoughtful place to catch up with your people.</p>
+      <div class="auth-tabs" role="tablist" aria-label="Account options">
+        <button class="auth-tab active" type="button" data-mode="login" role="tab" aria-selected="true">Sign in</button>
+        <button class="auth-tab" type="button" data-mode="register" role="tab" aria-selected="false">Create account</button>
+      </div>
+      <form id="auth-form">
+        <label for="username">Username</label>
+        <input id="username" name="username" autocomplete="username" required placeholder="Your username">
+        <div id="email-field" class="field hidden">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com">
+        </div>
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required placeholder="Your password">
+        <p id="auth-error" class="form-error" role="alert"></p>
+        <button id="auth-submit" class="button button-primary button-wide" type="submit">Sign in</button>
+      </form>
+      <p class="auth-footnote">Your conversations, all in one place.</p>
+    </section>
+    <div class="auth-art" aria-hidden="true">
+      <div class="art-orbit orbit-one"></div>
+      <div class="art-orbit orbit-two"></div>
+      <div class="art-note note-one">hey, how have you been?</div>
+      <div class="art-note note-two">Really good to hear from you ✳</div>
+      <div class="art-sun"></div>
+      <div class="art-caption">Make room for<br>good conversation.</div>
+      <span class="art-spark spark-one">✳</span>
+      <span class="art-spark spark-two">✳</span>
+    </div>
+  </main>
+
+  <main id="chat-screen" class="chat-screen hidden">
+    <aside id="sidebar" class="sidebar">
+      <div class="sidebar-top">
+        <a class="brand" href="/" aria-label="JasonChat home">
+          <span class="brand-mark">j</span><span>jasonchat</span>
+        </a>
+        <button id="new-chat-button" class="icon-button new-chat-button" type="button" aria-label="Start a conversation" title="Start a conversation">+</button>
+      </div>
+      <div class="sidebar-heading">
+        <div>
+          <p class="eyebrow">Your space</p>
+          <h1>Messages<span class="heading-dot">.</span></h1>
+        </div>
+      </div>
+      <label class="search-box" for="chat-filter">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 4.5 4.5"></path></svg>
+        <input id="chat-filter" type="search" placeholder="Find a conversation" autocomplete="off">
+        <kbd>⌘ K</kbd>
+      </label>
+      <div class="list-label"><span>RECENT</span><span id="conversation-count"></span></div>
+      <nav id="conversation-list" class="conversation-list" aria-label="Conversations"></nav>
+      <div id="sidebar-error" class="sidebar-error" role="status"></div>
+      <div class="account-row">
+        <div id="account-avatar" class="avatar avatar-small">J</div>
+        <div class="account-info"><strong id="account-name">You</strong><span>Personal account</span></div>
+        <button id="logout-button" class="icon-button logout-button" type="button" title="Sign out" aria-label="Sign out">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 17l5-5-5-5M15 12H3"></path><path d="M12 3h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-6"></path></svg>
+        </button>
+      </div>
+    </aside>
+
+    <section id="conversation-panel" class="conversation-panel">
+      <div id="empty-state" class="empty-state">
+        <div class="empty-illustration" aria-hidden="true">
+          <span class="empty-orbit"></span><span class="empty-chat-mark">✳</span>
+        </div>
+        <p class="eyebrow">Your people are here</p>
+        <h2>Make the first move.</h2>
+        <p>Pick up where you left off, or start a new conversation with someone.</p>
+        <button id="empty-new-chat" class="button button-primary" type="button">Start a conversation <span aria-hidden="true">↗</span></button>
+      </div>
+      <div id="active-chat" class="active-chat hidden">
+        <header class="chat-header">
+          <button id="mobile-back" class="icon-button mobile-back" type="button" aria-label="Back to conversations">←</button>
+          <div id="chat-avatar" class="avatar">J</div>
+          <div class="chat-heading"><h2 id="chat-title">Conversation</h2><p id="chat-subtitle">Here for a good chat</p></div>
+          <div class="header-decoration" aria-hidden="true"><span></span><span></span><span></span></div>
+        </header>
+        <div id="messages" class="messages" aria-live="polite" aria-label="Messages"></div>
+        <form id="message-form" class="composer">
+          <div class="composer-wrap">
+            <textarea id="message-input" rows="1" maxlength="5000" placeholder="Write a message..." aria-label="Write a message"></textarea>
+            <div class="composer-bottom"><span>Be kind. Be you.</span><button class="send-button" type="submit" aria-label="Send message" title="Send message">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 3-7.2 18-3.5-7.3L3 10.2 21 3Z"></path><path d="M10.3 13.7 21 3"></path></svg>
+            </button></div>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="new-chat-dialog" class="new-chat-dialog">
+    <div class="dialog-top">
+      <div><p class="eyebrow">A fresh start</p><h2>Who’s on your mind?</h2></div>
+      <button id="close-dialog" class="icon-button" type="button" aria-label="Close">×</button>
+    </div>
+    <label class="search-box dialog-search" for="user-search">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 4.5 4.5"></path></svg>
+      <input id="user-search" type="search" placeholder="Search by username" autocomplete="off">
+    </label>
+    <div id="user-search-results" class="user-search-results"><p class="search-hint">Search for someone to start a conversation.</p></div>
+  </dialog>
+</body>
+</html>
