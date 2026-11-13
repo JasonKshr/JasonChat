@@ -32,16 +32,15 @@ def create_conversation(request):
         # Add the creator automatically
         conversation.participants.add(request.user)
 
-        # Create membership records for group chats
-        if conversation.is_group:
-            for user in conversation.participants.all():
-                ConversationMember.objects.get_or_create(
-                    conversation=conversation,
-                    user=user,
-                    defaults={
-                        "is_admin": user.id == request.user.id
-                    }
-                )
+        # Create membership records so admin metadata is available for every participant.
+        for user in conversation.participants.all():
+            ConversationMember.objects.get_or_create(
+                conversation=conversation,
+                user=user,
+                defaults={
+                    "is_admin": conversation.is_group and user.id == request.user.id
+                }
+            )
 
     return Response(
         ConversationSerializer(conversation).data,
