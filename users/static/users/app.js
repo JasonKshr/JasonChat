@@ -118,6 +118,21 @@
     const container = $("#messages");
     const wasNearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 100;
     container.replaceChildren();
+    if (!items.length) {
+      const empty = document.createElement("div");
+      empty.className = "messages-empty";
+      const mark = document.createElement("span");
+      mark.className = "messages-empty-mark";
+      mark.setAttribute("aria-hidden", "true");
+      mark.textContent = "✳";
+      const title = document.createElement("strong");
+      title.textContent = "A fresh conversation";
+      const hint = document.createElement("span");
+      hint.textContent = "Send a hello to get things started.";
+      empty.append(mark, title, hint);
+      container.append(empty);
+      return;
+    }
     let previousDay = "";
     for (const message of items) {
       const date = new Date(message.sent_at);
@@ -398,13 +413,14 @@
     } catch (error) {
       showError($("#sidebar-error"), error.message);
     } finally {
-      button.disabled = false;
+      button.disabled = !input.value.trim();
     }
   });
 
   $("#message-input").addEventListener("input", (event) => {
     event.target.style.height = "auto";
     event.target.style.height = `${Math.min(event.target.scrollHeight, 120)}px`;
+    $("#message-form button[type='submit']").disabled = !event.target.value.trim();
   });
   $("#message-input").addEventListener("keydown", (event) => {
     if (event.key === "Enter" && !event.shiftKey) {
